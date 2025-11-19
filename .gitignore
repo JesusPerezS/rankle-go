@@ -1,0 +1,46 @@
+# Binaries
+bin/
+build/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test artifacts
+*.test
+*.out
+coverage.out
+coverage.html
+
+# Go workspace file
+go.work
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Output files
+reports/
+*.json
+*_report.txt
+
+# Logs
+*.log
+
+# Dependencies
+vendor/
+
+# Build artifacts
+dist/
+build/
+
+# Temporary files
+tmp/
+temp/

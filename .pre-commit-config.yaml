@@ -1,0 +1,45 @@
+# Pre-commit hooks for Rankle Go
+# See https://pre-commit.com for more information
+
+repos:
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=1000']
+      - id: check-merge-conflict
+
+  # Go formatting and linting
+  - repo: https://github.com/TekWizely/pre-commit-golang
+    rev: v1.0.0-rc.1
+    hooks:
+      # Go formatting (gofmt)
+      - id: go-fmt
+        args: [-w]
+
+      # Go imports formatting
+      - id: go-imports
+        args: [-w]
+
+      # Go vet
+      - id: go-vet
+
+      # Go tests with race detector
+      - id: go-test-repo-mod
+        args: [-race, -v, ./...]
+
+      # Go mod tidy
+      - id: go-mod-tidy
+
+  # golangci-lint - comprehensive linting
+  - repo: https://github.com/golangci/golangci-lint
+    rev: v1.55.2
+    hooks:
+      - id: golangci-lint
+        args:
+          - --timeout=5m
+          - --fix

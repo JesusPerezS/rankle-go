@@ -1,0 +1,402 @@
+# Rankle Go - Copilot Instructions
+
+## 📋 Project Context
+**Rankle** is a high-performance web infrastructure reconnaissance tool written in Go.
+Named after Rankle, Master of Pranks from Magic: The Gathering - a legendary faerie who excels at uncovering secrets.
+
+## 🎯 Core Functionality
+- **Purpose**: Passive reconnaissance and technology detection for web infrastructure
+- **Main features**: CMS detection, technology fingerprinting, cloud provider detection, CDN/WAF detection, DNS analysis, subdomain discovery, TLS/SSL analysis, security headers audit
+- **Output formats**: JSON and human-readable text reports
+
+## 🏗️ Project Structure
+```
+cmd/rankle/          # Main application entry point
+pkg/                 # Public reusable packages
+├── scanner/         # Core scanning engine
+├── detector/        # Technology detection logic
+├── dns/            # DNS operations and queries
+├── tls/            # TLS/SSL analysis
+└── models/         # Data structures and types
+internal/config/     # Internal configuration (not exposed)
+```
+
+## 💻 Tech Stack & Standards
+- **Language**: Go 1.23+
+- **Dependencies**: 100% Go standard library (NO external dependencies)
+- **Build System**: Docker for multi-platform builds, `go build` for local development
+- **Code Quality**: `go fmt`, `go vet`, `go test` before committing
+
+## 📚 Repository Documentation Standards
+
+### Essential Files Only
+The repository root should contain **ONLY** these files:
+- ✅ **README.md** - How to use and how to build the tool
+- ✅ **LICENSE** - MIT License
+- ✅ **Dockerfile** - For building binaries
+- ✅ **go.mod, go.sum** - Go dependencies
+
+### Forbidden Files
+**NEVER create these files:**
+- ❌ **BUILD.md, CHANGELOG.md, SECURITY.md, PRE-COMMIT.md** - Everything goes in README.md
+- ❌ **Makefile** - Use Docker or `go build` directly
+- ❌ **build.sh, install.sh, setup.sh** - Document commands in README.md
+- ❌ **TODO.md, NOTES.md, CONTRIBUTING.md** - Use GitHub Issues/Wiki
+- ❌ **Any .txt files** - Use Markdown only
+- ❌ **Any temporary or planning files** - Work in memory
+
+### Documentation Rules
+**CRITICAL: After EVERY task:**
+
+1. **Update README.md if needed** - Features, usage, or build process changed
+2. **Remove obsolete files** - Delete any temporary files created
+3. **Test all commands** - Verify examples in README.md work
+4. **Keep it simple** - All documentation in ONE file (README.md)
+
+### Documentation Philosophy
+- **One file to rule them all**: README.md contains everything
+- **No redundancy**: Don't create separate docs for each topic
+- **Minimal is better**: Only essential information
+- **GitHub features**: Use Issues for TODOs, Wiki for extended docs
+
+## 📐 Coding Standards & Best Practices (2025)
+
+### Go 1.23+ Modern Features
+- **Use Iterators**: Leverage `for-range` with iterator functions for memory-efficient data processing
+- **Generic Type Aliases**: Use generic type aliases for reusable abstractions (e.g., `type Set[T comparable] = map[T]struct{}`)
+- **Swiss Tables Maps**: Maps are now more efficient (2-3% faster); leverage this for map-heavy operations
+- **Tool Dependencies**: Track CLI tools directly in `go.mod` using `go get -tool` (no more tools.go workaround)
+
+### Go Conventions & Idiomatic Code
+1. **Follow Effective Go & Go Proverbs**: Use `gofmt`, `goimports`, `go vet` religiously
+2. **Error handling**: 
+   - Never ignore errors (`if err != nil`)
+   - Wrap errors with context using `fmt.Errorf("operation failed: %w", err)`
+   - Use sentinel errors for frequently returned errors
+   - Return errors as last value
+   - Prefer early returns over nested error checks
+3. **Naming**:
+   - Packages: Short, lowercase, single-word (avoid `util`, `common`, `base`)
+   - Variables: Short for narrow scope (i, n, c), descriptive for wider scope
+   - Interfaces: Use `-er` suffix for single-method interfaces (Reader, Writer, Scanner)
+   - Constants: CamelCase (HTTPRequest, URLPath, not HTTP_REQUEST)
+   - Acronyms: Keep uppercase (HTTP, URL, ID not Http, Url, Id)
+4. **Exported vs Unexported**: Capital for public API, lowercase for internal/private
+5. **Documentation**: 
+   - Every exported symbol MUST have godoc comment (full sentence)
+   - Comments explain "why", not "what" (code should be self-documenting)
+   - Package-level documentation at the top of main package file
+6. **Testing**: 
+   - Write table-driven tests with `t.Run()` for subtests
+   - Use `_test.go` suffix
+   - Use `testing.B.Loop()` for reliable benchmarks
+   - Mock external dependencies (DNS, HTTP calls)
+   - Run with race detector: `go test -race`
+
+### Code Style & Clean Code Principles
+- **Formatting**: Use `gofmt` and `goimports` (enforced by CI) - no debates about whitespace
+- **Function size**: Keep functions small and focused (Single Responsibility Principle)
+- **DRY (Don't Repeat Yourself)**: Extract common logic into reusable functions
+- **KISS (Keep It Simple, Stupid)**: Simple readable code over clever code
+- **Composition over inheritance**: Use struct embedding and interfaces
+- **Interface segregation**: Define interfaces where consumed, not where implemented
+- **Minimal interfaces**: Prefer smaller, focused interfaces over large ones
+- **Avoid global state**: Use dependency injection, pass dependencies explicitly
+
+### Architecture Patterns (SOLID Adapted for Go)
+- **Single Responsibility**: Each package, struct, and function has one clear purpose
+- **Open/Closed**: Use interfaces for extensibility without modifying existing code
+- **Liskov Substitution**: Interface implementations must be substitutable
+- **Interface Segregation**: Don't force implementers to depend on unused methods
+- **Dependency Inversion**: Depend on interfaces, not concrete types
+- **Separation of concerns**: Scanner, detector, DNS, TLS are separate packages
+- **Dependency injection**: Pass dependencies explicitly as parameters, avoid singletons
+- **Error wrapping**: Use `fmt.Errorf("context: %w", err)` for error chains
+- **Context usage**: Pass `context.Context` as FIRST parameter for cancellation/timeouts (never embed in structs)
+
+### Concurrency Best Practices
+- **"Don't communicate by sharing memory; share memory by communicating"** - Use channels
+- Use goroutines judiciously; don't spawn excessive goroutines
+- Synchronize with channels, `sync.WaitGroup`, `sync.Mutex` appropriately
+- Never rely on `time.Sleep()` for synchronization - use proper sync primitives
+- Always handle goroutine cleanup and cancellation with context
+- Test concurrent code with `go test -race` to detect race conditions
+- Use new `testing/synctest` package for testing concurrent code
+
+### Security & Performance
+- **Input validation**: Always sanitize and validate user input (domain names, URLs)
+- **Rate limiting**: Be respectful with external API calls (crt.sh, DNS queries)
+- **Resource cleanup**: Always `defer Close()` for resources (connections, files)
+- **No external deps**: Maintain zero external dependencies philosophy unless absolutely necessary
+- **Cryptography**: Use standard library crypto packages (crypto/tls, crypto/sha256, etc.)
+- **Memory efficiency**: Use iterators for large datasets instead of loading everything into memory
+
+### Testing Requirements
+- Unit tests for all core logic in pkg/
+- Table-driven tests with `t.Run()` for multiple scenarios  
+- Use subtests for better organization and parallel execution
+- Mock external dependencies (DNS, HTTP calls)
+- Run tests before committing: `go test -v ./...`
+- Run with race detector: `go test -race ./...`
+- Test error paths, not just happy paths
+
+### Documentation Standards
+- **Godoc**: Every exported package, type, function, constant, and variable MUST have a comment
+  - Start with the name of the item being documented
+  - Use full sentences with proper punctuation
+  - Example: `// Scanner performs web infrastructure reconnaissance.`
+- **Package documentation**: Add comprehensive package doc at top of main file
+- **Self-documenting code**: Write code that explains itself through clear naming
+- **README.md**: Update for user-facing changes
+- **Inline comments**: Use sparingly, only for complex logic or non-obvious decisions
+
+### Pre-commit Hooks (Automated Quality Checks)
+This project uses **pre-commit hooks** to automatically enforce code quality standards before every commit.
+
+**What gets checked automatically:**
+1. ✅ **Trailing whitespace** - Removed automatically
+2. ✅ **End of file newlines** - Fixed automatically
+3. ✅ **YAML validation** - Ensures config files are valid
+4. ✅ **Large file prevention** - Blocks files > 1MB
+5. ✅ **Merge conflict markers** - Prevents accidental commits with conflicts
+6. ✅ **go fmt** - Code formatting enforced
+7. ✅ **go vet** - Static analysis for bugs
+8. ✅ **go test -race** - All tests must pass with race detector
+9. ✅ **go mod tidy** - Dependencies kept clean
+10. ✅ **golangci-lint** - Comprehensive linting (40+ linters)
+
+**Setup (one-time):**
+```bash
+# Install pre-commit
+brew install pre-commit  # macOS
+pip install pre-commit   # Linux/Other
+
+# Install golangci-lint
+brew install golangci-lint  # macOS
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest  # Other
+
+# Install hooks in this repo
+pre-commit install
+```
+
+**Usage:**
+- Hooks run automatically on `git commit`
+- If hooks fail, fix issues and commit again
+- Run manually: `pre-commit run --all-files`
+- Emergency skip (NOT recommended): `git commit --no-verify`
+
+**Benefits:**
+- 🚀 Catch issues before CI/CD
+- ✅ Consistent code quality across team
+- 🎯 Fast feedback loop
+- 📊 No more "fix linting" commits
+
+See [PRE-COMMIT.md](../PRE-COMMIT.md) for detailed setup and troubleshooting.
+
+## 🛠️ Development Workflow
+**Pre-commit hooks automatically check code quality before commits. Docker is used ONLY for building multi-platform binaries.**
+
+See [PRE-COMMIT.md](../PRE-COMMIT.md) for pre-commit setup and [BUILD.md](../BUILD.md) for build commands.
+
+### First Time Setup
+1. **Install pre-commit**: `brew install pre-commit` (macOS) or `pip install pre-commit`
+2. **Install golangci-lint**: `brew install golangci-lint` or `go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest`
+3. **Install hooks**: `pre-commit install`
+
+### Daily Development
+1. **Make code changes**
+2. **Stage changes**: `git add .`
+3. **Commit** (hooks run automatically): `git commit -m "message"`
+4. **If hooks fail**: Fix issues, re-stage, and commit again
+
+### Manual Commands
+- **Run all hooks**: `pre-commit run --all-files`
+- **Run tests**: `go test -v -race ./...`
+- **Run linter**: `golangci-lint run ./...`
+- **Format code**: `go fmt ./...`
+- **Check with vet**: `go vet ./...`
+- **Build binaries**: `docker build -t rankle-builder . && docker run --rm -v $(pwd)/build:/build rankle-builder`
+- **Manual testing**: Test with real domains: `./build/rankle-{platform}-{arch} example.com`
+
+## 🚫 What NOT to Do (Anti-Patterns)
+
+### Code Anti-Patterns
+- ❌ **Don't skip pre-commit hooks** - They catch issues before CI/CD (use `--no-verify` only for emergencies)
+- ❌ **Don't use Makefile or .sh scripts** - Use Docker for multi-platform builds, local Go for dev
+- ❌ **Don't add external dependencies** without strong justification (violates core philosophy)
+- ❌ **Don't modify working code** unnecessarily (if it ain't broke, don't fix it)
+- ❌ **Don't ignore linter warnings** - fix them or explicitly ignore with justification
+- ❌ **Don't skip error handling** - every error must be checked
+- ❌ **Don't use global variables** for state management
+- ❌ **Don't break backward compatibility** in public APIs (pkg/)
+- ❌ **Don't use `panic()` for normal errors** - reserve for truly unrecoverable situations
+- ❌ **Don't embed `context.Context` in structs** - always pass as first function parameter
+- ❌ **Don't use `time.Sleep()` for synchronization** - use channels/sync primitives
+- ❌ **Don't ignore race warnings** - run `go test -race` and fix all races
+- ❌ **Don't create generic utility packages** named `util`, `common`, `helpers`
+- ❌ **Don't use `init()` functions** unless absolutely necessary (makes testing hard)
+- ❌ **Don't pre-optimize** - write clear code first, profile before optimizing
+- ❌ **Don't write clever code** - write obvious, maintainable code
+
+### Documentation Anti-Patterns
+- ❌ **Don't leave obsolete files** in repository root after refactoring
+- ❌ **Don't skip documentation updates** when changing code
+- ❌ **Don't create unnecessary docs** (TODO.md, NOTES.md, CONTRIBUTING.md, etc.)
+- ❌ **Don't duplicate information** across multiple documentation files
+- ❌ **Don't keep outdated examples** that no longer work
+- ❌ **Don't use .txt files** for documentation (use Markdown .md)
+- ❌ **Don't leave untested commands** in documentation
+- ❌ **Don't forget to update version numbers** in docs
+- ❌ **Don't complete a task** without reviewing all affected documentation
+- ❌ **Don't create docs for temporary decisions** - use comments instead
+
+## 🎨 Output & UX
+- Keep CLI output clean and readable
+- Use emojis sparingly for visual hierarchy in console output
+- JSON output must be valid and well-structured
+- Error messages should be clear and actionable
+- Respect user's terminal width
+
+## 🔍 When Adding Features
+1. Check if it fits the "passive reconnaissance" philosophy
+2. Ensure it doesn't require external dependencies
+3. Add appropriate detection logic to pkg/detector/
+4. Update models in pkg/models/ if new data structures needed
+5. Add tests for new functionality
+6. Update README.md with new feature documentation
+7. Update CHANGELOG.md
+8. **Review all documentation for accuracy and consistency**
+9. **Remove any obsolete files or documentation**
+10. **Test all documented commands and examples**
+
+## 📝 Documentation Philosophy
+
+### Unified Documentation Strategy
+This project follows **GitHub's best practices for repository documentation**:
+
+1. **README-first approach**: Main entry point for all users
+2. **Specialized docs for specific topics**: BUILD.md, SECURITY.md, etc.
+3. **Single source of truth**: No duplicate information
+4. **Minimal file count**: Only essential documentation in root
+5. **Cross-referencing**: Link between docs, don't duplicate content
+
+### GitHub Documentation Standards
+Follow these industry-standard practices:
+
+**File naming conventions:**
+- Use UPPERCASE for important docs: `README.md`, `CHANGELOG.md`, `SECURITY.md`
+- Use descriptive names: `BUILD.md` not `build.txt`
+- Use Markdown (`.md`) for all documentation
+- Never use `.txt` files for documentation
+
+**Content organization:**
+- **README.md**: Project overview, features, quick start, basic usage
+- **BUILD.md**: Detailed build instructions, development setup
+- **SECURITY.md**: Security policy, vulnerability reporting
+- **CHANGELOG.md**: Version history, release notes
+- **PRE-COMMIT.md**: Development tooling setup
+- **LICENSE**: Project license (no modifications needed)
+- **DEPRECATED.md**: Historical record of removed files/features
+
+**Documentation maintenance:**
+- Keep docs synchronized with code
+- Update docs in the same PR as code changes
+- Remove outdated information immediately
+- Test all command examples before committing
+- Use version-specific information (e.g., "Go 1.23+" not "latest Go")
+
+### Documentation Anti-Patterns (What NOT to do)
+- ❌ Don't create `CONTRIBUTING.md` - Include in README.md instead
+- ❌ Don't create `TODO.md` - Use GitHub Issues
+- ❌ Don't create `ROADMAP.md` - Use GitHub Projects/Milestones
+- ❌ Don't create `NOTES.md` or planning files - Use GitHub Wiki
+- ❌ Don't keep outdated documentation "just in case"
+- ❌ Don't duplicate information across multiple files
+- ❌ Don't create docs for temporary decisions
+- ❌ Don't let docs drift from reality
+
+## 📦 Release Process
+- Follow semantic versioning (MAJOR.MINOR.PATCH)
+- Update CHANGELOG.md with changes
+- Build all platform binaries: `docker build -t rankle-builder . && docker run --rm -v $(pwd)/build:/build rankle-builder`
+- All binaries will be in `./build/` directory with checksums
+- Test on Linux, macOS, and Windows if possible
+- Create GitHub release with binaries and checksums from `./build/` directory
+
+## 🤖 AI Assistant Guidelines
+When helping with this project, you MUST:
+- ✅ **Install and use pre-commit hooks** - All code must pass hooks before committing
+- ✅ Follow **Effective Go** and **Go Code Review Comments** guidelines religiously
+- ✅ Prioritize Go idioms and standard library solutions over external packages
+- ✅ Write simple, readable, maintainable code over clever optimizations
+- ✅ Always consider security implications (this is a security reconnaissance tool)
+- ✅ Test with real-world scenarios when possible
+- ✅ Maintain the "zero external dependencies" philosophy
+- ✅ Focus on performance (this tool may scan many domains)
+- ✅ Use Go 1.23+ features (iterators, generic type aliases) when appropriate
+- ✅ Apply SOLID principles adapted for Go
+- ✅ Write comprehensive godoc comments for all exported symbols
+- ✅ **ALWAYS review and update documentation after EVERY task**
+- ✅ **Keep repository root clean** - Remove obsolete files immediately
+- ✅ **Verify documentation accuracy** - Test all command examples before completing tasks
+- ✅ Use table-driven tests with subtests
+- ✅ Handle ALL errors explicitly, wrap with context
+- ✅ Use `context.Context` for cancellation and timeouts
+- ✅ Run `go test -race` to verify concurrency safety
+- ✅ Keep functions small (≤ 50 lines ideal, max 100 lines)
+- ✅ Prefer early returns over nested conditionals
+
+### Code Review Checklist
+Before submitting code, verify:
+1. [ ] **Pre-commit hooks pass** (run automatically on commit)
+2. [ ] All tests pass: `go test -v ./...`
+3. [ ] Race detector passes: `go test -race ./...`
+4. [ ] Linter passes: `golangci-lint run ./...`
+5. [ ] Code is formatted: `go fmt ./...`
+6. [ ] Static analysis passes: `go vet ./...`
+7. [ ] All exported symbols have godoc comments
+8. [ ] All errors are handled (no `_ = err` without comment)
+9. [ ] No new external dependencies added
+10. [ ] Backward compatibility maintained
+11. [ ] README/CHANGELOG updated if needed
+12. [ ] Multi-platform binaries build successfully via Docker
+13. [ ] **Documentation reviewed and updated** (see Documentation Review Checklist)
+14. [ ] **No obsolete files remain** in repository root
+15. [ ] **All command examples tested** and working
+
+**Note:** Items 2-6 are automatically checked by pre-commit hooks on every commit.
+
+### Post-Task Documentation Review (MANDATORY)
+**After completing ANY task, you MUST perform these checks:**
+
+1. **Review changed functionality**:
+   - Does README.md accurately describe new/changed features?
+   - Are installation instructions still correct?
+   - Do usage examples still work?
+
+2. **Update build documentation**:
+   - Does BUILD.md reflect current build process?
+   - Are Docker commands tested and accurate?
+   - Are version requirements up to date?
+
+3. **Check changelog**:
+   - Is CHANGELOG.md updated with changes?
+   - Is version number correctly incremented?
+   - Are changes clearly described?
+
+4. **Verify security docs**:
+   - Does SECURITY.md reflect new security considerations?
+   - Are vulnerability reporting instructions current?
+
+5. **Clean repository root**:
+   - Remove any temporary files created
+   - Delete obsolete documentation
+   - Update DEPRECATED.md if files were removed
+   - Verify only essential files remain
+
+6. **Test documentation**:
+   - Run all command examples from docs
+   - Verify links between documents work
+   - Check that prerequisites are listed correctly
+
+**If you skip this review, you have FAILED the task.**
