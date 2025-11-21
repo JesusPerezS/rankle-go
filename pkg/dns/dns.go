@@ -14,13 +14,13 @@ import (
 	"github.com/javicosvml/rankle-go/pkg/models"
 )
 
-// Resolver handles DNS operations
+// Resolver handles DNS operations.
 type Resolver struct {
 	config   *config.Config
 	resolver *net.Resolver
 }
 
-// New creates a new DNS resolver
+// New creates a new DNS resolver.
 func New(cfg *config.Config) *Resolver {
 	if cfg == nil {
 		cfg = config.Default()
@@ -46,7 +46,7 @@ func New(cfg *config.Config) *Resolver {
 	}
 }
 
-// Analyze performs comprehensive DNS analysis
+// Analyze performs comprehensive DNS analysis.
 func (r *Resolver) Analyze(domain string) (*models.DNSAnalysis, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), r.config.DNS.Timeout)
 	defer cancel()
@@ -97,7 +97,7 @@ func (r *Resolver) Analyze(domain string) (*models.DNSAnalysis, error) {
 	return analysis, nil
 }
 
-// LookupIP resolves domain to IP addresses
+// LookupIP resolves domain to IP addresses.
 func (r *Resolver) LookupIP(domain string) ([]string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), r.config.DNS.Timeout)
 	defer cancel()
@@ -115,7 +115,7 @@ func (r *Resolver) LookupIP(domain string) ([]string, error) {
 	return result, nil
 }
 
-// ReverseLookup performs reverse DNS lookup
+// ReverseLookup performs reverse DNS lookup.
 func (r *Resolver) ReverseLookup(ip string) ([]string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), r.config.DNS.Timeout)
 	defer cancel()
@@ -123,12 +123,12 @@ func (r *Resolver) ReverseLookup(ip string) ([]string, error) {
 	return r.resolver.LookupAddr(ctx, ip)
 }
 
-// SubdomainResult represents a subdomain from crt.sh
+// SubdomainResult represents a subdomain from crt.sh.
 type SubdomainResult struct {
 	NameValue string `json:"name_value"`
 }
 
-// EnumerateSubdomains discovers subdomains using Certificate Transparency logs
+// EnumerateSubdomains discovers subdomains using Certificate Transparency logs.
 func (r *Resolver) EnumerateSubdomains(domain string) ([]string, error) {
 	url := fmt.Sprintf("https://crt.sh/?q=%%.%s&output=json", domain)
 

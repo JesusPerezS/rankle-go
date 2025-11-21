@@ -11,15 +11,23 @@ import (
 	"github.com/javicosvml/rankle-go/pkg/models"
 )
 
-// Formatter handles output formatting
+const (
+	maxSubdomainsDisplay = 50
+	lineWidth           = 80
+	sectionWidth        = 40
+	filePermissions     = 0644
+	dirPermissions      = 0755
+)
+
+// Formatter handles output formatting.
 type Formatter struct{}
 
-// New creates a new output formatter
+// New creates a new output formatter.
 func New() *Formatter {
 	return &Formatter{}
 }
 
-// PrintBanner displays the application banner
+// PrintBanner displays the application banner.
 func (f *Formatter) PrintBanner() {
 	banner := `
 ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -42,9 +50,9 @@ func (f *Formatter) PrintBanner() {
 	fmt.Println(banner)
 }
 
-// PrintSummary displays a summary of scan results
+// PrintSummary displays a summary of scan results.
 func (f *Formatter) PrintSummary(result *models.ScanResult) {
-	fmt.Println("\n" + strings.Repeat("=", 80))
+	fmt.Println("\n" + strings.Repeat("=", lineWidth))
 	fmt.Println("📊 SCAN SUMMARY")
 	fmt.Println(strings.Repeat("=", 80))
 	fmt.Printf("\n🎯 Domain:          %s\n", result.Domain)
@@ -103,7 +111,7 @@ func (f *Formatter) PrintSummary(result *models.ScanResult) {
 	fmt.Println(strings.Repeat("=", 80))
 }
 
-// SaveJSON saves results as JSON file
+// SaveJSON saves results as JSON file.
 func (f *Formatter) SaveJSON(result *models.ScanResult, outputPath string) error {
 	// Create output directory if it doesn't exist
 	dir := filepath.Dir(outputPath)
@@ -118,7 +126,7 @@ func (f *Formatter) SaveJSON(result *models.ScanResult, outputPath string) error
 	}
 
 	// Write to file
-	if err := os.WriteFile(outputPath, data, 0644); err != nil {
+	if err := os.WriteFile(outputPath, data, filePermissions); err != nil {
 		return fmt.Errorf("failed to write file: %w", err)
 	}
 
@@ -126,17 +134,17 @@ func (f *Formatter) SaveJSON(result *models.ScanResult, outputPath string) error
 	return nil
 }
 
-// SaveText saves results as human-readable text file
+// SaveText saves results as human-readable text file.
 func (f *Formatter) SaveText(result *models.ScanResult, outputPath string) error {
 	// Create output directory if it doesn't exist
 	dir := filepath.Dir(outputPath)
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, dirPermissions); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
 	// Build text report
 	var sb strings.Builder
-	sb.WriteString(strings.Repeat("=", 80) + "\n")
+	sb.WriteString(strings.Repeat("=", lineWidth) + "\n")
 	sb.WriteString("RANKLE - Web Infrastructure Reconnaissance Report\n")
 	sb.WriteString(strings.Repeat("=", 80) + "\n\n")
 	sb.WriteString(fmt.Sprintf("Domain:      %s\n", result.Domain))
@@ -146,7 +154,7 @@ func (f *Formatter) SaveText(result *models.ScanResult, outputPath string) error
 	// HTTP Section
 	if result.HTTP != nil {
 		sb.WriteString("HTTP ANALYSIS\n")
-		sb.WriteString(strings.Repeat("-", 40) + "\n")
+		sb.WriteString(strings.Repeat("-", sectionWidth) + "\n")
 		sb.WriteString(fmt.Sprintf("Status Code:    %d\n", result.HTTP.StatusCode))
 		sb.WriteString(fmt.Sprintf("Response Time:  %dms\n", result.HTTP.ResponseTime))
 		if result.HTTP.Server != "" {
@@ -161,7 +169,7 @@ func (f *Formatter) SaveText(result *models.ScanResult, outputPath string) error
 	// DNS Section
 	if result.DNS != nil {
 		sb.WriteString("DNS RECORDS\n")
-		sb.WriteString(strings.Repeat("-", 40) + "\n")
+		sb.WriteString(strings.Repeat("-", sectionWidth) + "\n")
 		if len(result.DNS.A) > 0 {
 			sb.WriteString(fmt.Sprintf("A Records:      %s\n", strings.Join(result.DNS.A, ", ")))
 		}
@@ -183,7 +191,7 @@ func (f *Formatter) SaveText(result *models.ScanResult, outputPath string) error
 	// Technologies Section
 	if result.Technologies != nil {
 		sb.WriteString("DETECTED TECHNOLOGIES\n")
-		sb.WriteString(strings.Repeat("-", 40) + "\n")
+		sb.WriteString(strings.Repeat("-", sectionWidth) + "\n")
 		if result.Technologies.CMS != "" {
 			sb.WriteString(fmt.Sprintf("CMS:            %s\n", result.Technologies.CMS))
 		}
@@ -198,7 +206,7 @@ func (f *Formatter) SaveText(result *models.ScanResult, outputPath string) error
 
 	// Infrastructure Section
 	sb.WriteString("INFRASTRUCTURE\n")
-	sb.WriteString(strings.Repeat("-", 40) + "\n")
+	sb.WriteString(strings.Repeat("-", sectionWidth) + "\n")
 	if result.CDN != "" {
 		sb.WriteString(fmt.Sprintf("CDN:            %s\n", result.CDN))
 	}
@@ -213,7 +221,7 @@ func (f *Formatter) SaveText(result *models.ScanResult, outputPath string) error
 	// TLS Section
 	if result.TLS != nil {
 		sb.WriteString("TLS/SSL CERTIFICATE\n")
-		sb.WriteString(strings.Repeat("-", 40) + "\n")
+		sb.WriteString(strings.Repeat("-", sectionWidth) + "\n")
 		sb.WriteString(fmt.Sprintf("TLS Version:    %s\n", result.TLS.Version))
 		sb.WriteString(fmt.Sprintf("Subject:        %s\n", result.TLS.Subject))
 		sb.WriteString(fmt.Sprintf("Issuer:         %s\n", result.TLS.Issuer))
@@ -225,7 +233,7 @@ func (f *Formatter) SaveText(result *models.ScanResult, outputPath string) error
 	// Geolocation Section
 	if result.Geolocation != nil {
 		sb.WriteString("GEOLOCATION\n")
-		sb.WriteString(strings.Repeat("-", 40) + "\n")
+		sb.WriteString(strings.Repeat("-", sectionWidth) + "\n")
 		sb.WriteString(fmt.Sprintf("Country:        %s\n", result.Geolocation.Country))
 		sb.WriteString(fmt.Sprintf("City:           %s\n", result.Geolocation.City))
 		if result.Geolocation.ISP != "" {
@@ -237,10 +245,11 @@ func (f *Formatter) SaveText(result *models.ScanResult, outputPath string) error
 	// Subdomains Section
 	if len(result.Subdomains) > 0 {
 		sb.WriteString(fmt.Sprintf("SUBDOMAINS (%d found)\n", len(result.Subdomains)))
-		sb.WriteString(strings.Repeat("-", 40) + "\n")
+		sb.WriteString(strings.Repeat("-", sectionWidth) + "\n")
 		for i, subdomain := range result.Subdomains {
-			if i >= 50 { // Limit display
-				sb.WriteString(fmt.Sprintf("... and %d more\n", len(result.Subdomains)-50))
+			if i >= maxSubdomainsDisplay {
+				remaining := len(result.Subdomains) - maxSubdomainsDisplay
+				sb.WriteString(fmt.Sprintf("... and %d more\n", remaining))
 				break
 			}
 			sb.WriteString(fmt.Sprintf("  - %s\n", subdomain))
@@ -248,11 +257,11 @@ func (f *Formatter) SaveText(result *models.ScanResult, outputPath string) error
 		sb.WriteString("\n")
 	}
 
-	sb.WriteString(strings.Repeat("=", 80) + "\n")
+	sb.WriteString(strings.Repeat("=", lineWidth) + "\n")
 	sb.WriteString("Generated by Rankle - https://github.com/javicosvml/rankle-go\n")
 
 	// Write to file
-	if err := os.WriteFile(outputPath, []byte(sb.String()), 0644); err != nil {
+	if err := os.WriteFile(outputPath, []byte(sb.String()), filePermissions); err != nil{
 		return fmt.Errorf("failed to write file: %w", err)
 	}
 

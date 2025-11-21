@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-// ScanResult contains all the results from a domain scan
+// ScanResult contains all the results from a domain scan.
 type ScanResult struct {
 	Domain          string                 `json:"domain"`
 	Timestamp       time.Time              `json:"timestamp"`
@@ -19,7 +19,7 @@ type ScanResult struct {
 	Metadata        map[string]interface{} `json:"metadata,omitempty"`
 }
 
-// HTTPAnalysis contains HTTP-related information
+// HTTPAnalysis contains HTTP-related information.
 type HTTPAnalysis struct {
 	StatusCode   int               `json:"status_code"`
 	Server       string            `json:"server,omitempty"`
@@ -29,7 +29,7 @@ type HTTPAnalysis struct {
 	ContentType  string            `json:"content_type,omitempty"`
 }
 
-// DNSAnalysis contains DNS records
+// DNSAnalysis contains DNS records.
 type DNSAnalysis struct {
 	A     []string `json:"a,omitempty"`
 	AAAA  []string `json:"aaaa,omitempty"`
@@ -40,7 +40,7 @@ type DNSAnalysis struct {
 	SOA   string   `json:"soa,omitempty"`
 }
 
-// TLSAnalysis contains TLS/SSL certificate information
+// TLSAnalysis contains TLS/SSL certificate information.
 type TLSAnalysis struct {
 	Version      string    `json:"version"`
 	CipherSuite  string    `json:"cipher_suite"`
@@ -53,7 +53,7 @@ type TLSAnalysis struct {
 	PublicKeyAlg string    `json:"public_key_algorithm"`
 }
 
-// Technologies contains detected web technologies
+// Technologies contains detected web technologies.
 type Technologies struct {
 	CMS         string   `json:"cms,omitempty"`
 	Frameworks  []string `json:"frameworks,omitempty"`
@@ -64,7 +64,7 @@ type Technologies struct {
 	Fingerprint []string `json:"fingerprint,omitempty"`
 }
 
-// Geolocation contains location and ISP information
+// Geolocation contains location and ISP information.
 type Geolocation struct {
 	IP          string  `json:"ip"`
 	Country     string  `json:"country,omitempty"`

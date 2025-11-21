@@ -11,12 +11,12 @@ import (
 	"github.com/javicosvml/rankle-go/pkg/models"
 )
 
-// Analyzer handles TLS/SSL certificate analysis
+// Analyzer handles TLS/SSL certificate analysis.
 type Analyzer struct {
 	config *config.Config
 }
 
-// New creates a new TLS analyzer
+// New creates a new TLS analyzer.
 func New(cfg *config.Config) *Analyzer {
 	if cfg == nil {
 		cfg = config.Default()
@@ -24,7 +24,7 @@ func New(cfg *config.Config) *Analyzer {
 	return &Analyzer{config: cfg}
 }
 
-// Analyze performs TLS certificate analysis
+// Analyze performs TLS certificate analysis.
 func (a *Analyzer) Analyze(domain string) (*models.TLSAnalysis, error) {
 	dialer := &net.Dialer{
 		Timeout: a.config.TLS.Timeout,
@@ -57,7 +57,7 @@ func (a *Analyzer) Analyze(domain string) (*models.TLSAnalysis, error) {
 	return analysis, nil
 }
 
-// GetCertificate retrieves the TLS certificate
+// GetCertificate retrieves the TLS certificate.
 func (a *Analyzer) GetCertificate(domain string) (*x509.Certificate, error) {
 	dialer := &net.Dialer{
 		Timeout: a.config.TLS.Timeout,
@@ -80,7 +80,7 @@ func (a *Analyzer) GetCertificate(domain string) (*x509.Certificate, error) {
 	return certs[0], nil
 }
 
-// ValidateCertificate checks if the certificate is valid
+// ValidateCertificate checks if the certificate is valid.
 func (a *Analyzer) ValidateCertificate(cert *x509.Certificate, domain string) error {
 	now := time.Now()
 	if now.Before(cert.NotBefore) {
@@ -101,7 +101,7 @@ func (a *Analyzer) ValidateCertificate(cert *x509.Certificate, domain string) er
 	return nil
 }
 
-// tlsVersionString converts TLS version uint16 to string
+// tlsVersionString converts TLS version uint16 to string.
 func tlsVersionString(version uint16) string {
 	switch version {
 	case tls.VersionTLS10:

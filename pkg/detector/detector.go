@@ -8,15 +8,15 @@ import (
 	"github.com/javicosvml/rankle-go/pkg/models"
 )
 
-// Detector handles technology detection
+// Detector handles technology detection.
 type Detector struct{}
 
-// New creates a new Detector instance
+// New creates a new Detector instance.
 func New() *Detector {
 	return &Detector{}
 }
 
-// DetectTechnologies analyzes HTML content and headers to detect technologies
+// DetectTechnologies analyzes HTML content and headers to detect technologies.
 func (d *Detector) DetectTechnologies(body string, headers map[string]string) *models.Technologies {
 	tech := &models.Technologies{
 		Frameworks:  []string{},
@@ -52,7 +52,7 @@ func (d *Detector) DetectTechnologies(body string, headers map[string]string) *m
 	return tech
 }
 
-// detectCMS identifies Content Management Systems
+// detectCMS identifies Content Management Systems.
 func (d *Detector) detectCMS(body string, headers map[string]string) string {
 	indicators := make(map[string]int)
 
@@ -134,7 +134,7 @@ func (d *Detector) detectCMS(body string, headers map[string]string) string {
 	return detectedCMS
 }
 
-// detectLibraries identifies JavaScript libraries
+// detectLibraries identifies JavaScript libraries.
 func (d *Detector) detectLibraries(body string) []string {
 	libraries := []string{}
 
@@ -161,7 +161,7 @@ func (d *Detector) detectLibraries(body string) []string {
 	return libraries
 }
 
-// detectFrameworks identifies web frameworks
+// detectFrameworks identifies web frameworks.
 func (d *Detector) detectFrameworks(body string, headers map[string]string) []string {
 	frameworks := []string{}
 
@@ -185,7 +185,7 @@ func (d *Detector) detectFrameworks(body string, headers map[string]string) []st
 	return frameworks
 }
 
-// detectLanguages identifies programming languages
+// detectLanguages identifies programming languages.
 func (d *Detector) detectLanguages(body string, headers map[string]string) []string {
 	languages := []string{}
 
@@ -209,7 +209,7 @@ func (d *Detector) detectLanguages(body string, headers map[string]string) []str
 	return languages
 }
 
-// detectAnalytics identifies analytics services
+// detectAnalytics identifies analytics services.
 func (d *Detector) detectAnalytics(body string) []string {
 	analytics := []string{}
 
@@ -230,7 +230,7 @@ func (d *Detector) detectAnalytics(body string) []string {
 	return analytics
 }
 
-// DetectCDN identifies CDN providers from headers and CNAME records
+// DetectCDN identifies CDN providers from headers and CNAME records.
 func (d *Detector) DetectCDN(headers map[string]string, cnames []string) string {
 	cdnPatterns := map[string][]string{
 		"Cloudflare":        {"cloudflare", "cf-ray"},
@@ -274,7 +274,7 @@ func (d *Detector) DetectCDN(headers map[string]string, cnames []string) string 
 	return ""
 }
 
-// DetectWAF identifies Web Application Firewalls
+// DetectWAF identifies Web Application Firewalls.
 func (d *Detector) DetectWAF(headers map[string]string, resp *http.Response) string {
 	wafPatterns := map[string][]string{
 		"Cloudflare":      {"cf-ray", "cloudflare"},
@@ -304,7 +304,7 @@ func (d *Detector) DetectWAF(headers map[string]string, resp *http.Response) str
 	return ""
 }
 
-// DetectCloudProvider identifies cloud/hosting providers
+// DetectCloudProvider identifies cloud/hosting providers.
 func (d *Detector) DetectCloudProvider(ip, hostname, isp string) string {
 	combinedInfo := strings.ToLower(ip + " " + hostname + " " + isp)
 
@@ -334,7 +334,7 @@ func (d *Detector) DetectCloudProvider(ip, hostname, isp string) string {
 	return ""
 }
 
-// Helper function
+// Helper function.
 func contains(slice []string, item string) bool {
 	for _, s := range slice {
 		if s == item {

@@ -12,13 +12,13 @@ import (
 	"github.com/javicosvml/rankle-go/pkg/models"
 )
 
-// Scanner handles the main scanning logic
+// Scanner handles the main scanning logic.
 type Scanner struct {
 	config *config.Config
 	client *http.Client
 }
 
-// New creates a new Scanner with the given configuration
+// New creates a new Scanner with the given configuration.
 func New(cfg *config.Config) *Scanner {
 	if cfg == nil {
 		cfg = config.Default()
@@ -53,7 +53,7 @@ func New(cfg *config.Config) *Scanner {
 	}
 }
 
-// Scan performs a complete scan of the domain
+// Scan performs a complete scan of the domain.
 func (s *Scanner) Scan(domain string) (*models.ScanResult, error) {
 	result := &models.ScanResult{
 		Domain:    domain,
@@ -68,7 +68,7 @@ func (s *Scanner) Scan(domain string) (*models.ScanResult, error) {
 	return result, nil
 }
 
-// AnalyzeHTTP performs HTTP analysis
+// AnalyzeHTTP performs HTTP analysis.
 func (s *Scanner) AnalyzeHTTP(domain string) (*models.HTTPAnalysis, *http.Response, error) {
 	url := s.ensureHTTPS(domain)
 
@@ -112,7 +112,7 @@ func (s *Scanner) AnalyzeHTTP(domain string) (*models.HTTPAnalysis, *http.Respon
 	return analysis, resp, nil
 }
 
-// GetHTMLBody reads and returns the response body as string
+// GetHTMLBody reads and returns the response body as string.
 func (s *Scanner) GetHTMLBody(resp *http.Response) (string, error) {
 	if resp == nil {
 		return "", fmt.Errorf("response is nil")
@@ -127,7 +127,7 @@ func (s *Scanner) GetHTMLBody(resp *http.Response) (string, error) {
 	return string(body), nil
 }
 
-// normalizeDomain removes protocol and port from domain
+// normalizeDomain removes protocol and port from domain.
 func (s *Scanner) normalizeDomain(domain string) string {
 	domain = strings.TrimSpace(domain)
 	domain = strings.TrimPrefix(domain, "http://")
@@ -144,18 +144,18 @@ func (s *Scanner) normalizeDomain(domain string) string {
 	return domain
 }
 
-// ensureHTTPS adds https:// protocol if missing
+// ensureHTTPS adds https:// protocol if missing.
 func (s *Scanner) ensureHTTPS(domain string) string {
 	domain = s.normalizeDomain(domain)
 	return "https://" + domain
 }
 
-// GetClient returns the HTTP client
+// GetClient returns the HTTP client.
 func (s *Scanner) GetClient() *http.Client {
 	return s.client
 }
 
-// GetConfig returns the scanner configuration
+// GetConfig returns the scanner configuration.
 func (s *Scanner) GetConfig() *config.Config {
 	return s.config
 }
