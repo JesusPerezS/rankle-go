@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"io"
@@ -72,7 +73,10 @@ func (s *Scanner) Scan(domain string) (*models.ScanResult, error) {
 func (s *Scanner) AnalyzeHTTP(domain string) (*models.HTTPAnalysis, *http.Response, error) {
 	url := s.ensureHTTPS(domain)
 
-	req, err := http.NewRequest("GET", url, nil)
+	ctx, cancel := context.WithTimeout(context.Background(), s.config.HTTP.Timeout)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}

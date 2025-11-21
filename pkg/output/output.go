@@ -54,7 +54,7 @@ func (f *Formatter) PrintBanner() {
 func (f *Formatter) PrintSummary(result *models.ScanResult) {
 	fmt.Println("\n" + strings.Repeat("=", lineWidth))
 	fmt.Println("📊 SCAN SUMMARY")
-	fmt.Println(strings.Repeat("=", 80))
+	fmt.Println(strings.Repeat("=", lineWidth))
 	fmt.Printf("\n🎯 Domain:          %s\n", result.Domain)
 	fmt.Printf("🕐 Timestamp:       %s\n", result.Timestamp.Format(time.RFC1123))
 
@@ -108,7 +108,7 @@ func (f *Formatter) PrintSummary(result *models.ScanResult) {
 		fmt.Printf("\n🔎 Subdomains:      %d found\n", len(result.Subdomains))
 	}
 
-	fmt.Println(strings.Repeat("=", 80))
+	fmt.Println(strings.Repeat("=", lineWidth))
 }
 
 // SaveJSON saves results as JSON file.
@@ -146,10 +146,10 @@ func (f *Formatter) SaveText(result *models.ScanResult, outputPath string) error
 	var sb strings.Builder
 	sb.WriteString(strings.Repeat("=", lineWidth) + "\n")
 	sb.WriteString("RANKLE - Web Infrastructure Reconnaissance Report\n")
-	sb.WriteString(strings.Repeat("=", 80) + "\n\n")
+	sb.WriteString(strings.Repeat("=", lineWidth) + "\n\n")
 	sb.WriteString(fmt.Sprintf("Domain:      %s\n", result.Domain))
 	sb.WriteString(fmt.Sprintf("Scan Date:   %s\n", result.Timestamp.Format(time.RFC1123)))
-	sb.WriteString(strings.Repeat("=", 80) + "\n\n")
+	sb.WriteString(strings.Repeat("=", lineWidth) + "\n\n")
 
 	// HTTP Section
 	if result.HTTP != nil {

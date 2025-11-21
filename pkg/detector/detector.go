@@ -334,7 +334,7 @@ func (d *Detector) DetectCloudProvider(ip, hostname, isp string) string {
 	return ""
 }
 
-// Helper function.
+// contains checks if a string slice contains a specific item.
 func contains(slice []string, item string) bool {
 	for _, s := range slice {
 		if s == item {

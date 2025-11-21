@@ -130,13 +130,22 @@ type SubdomainResult struct {
 
 // EnumerateSubdomains discovers subdomains using Certificate Transparency logs.
 func (r *Resolver) EnumerateSubdomains(domain string) ([]string, error) {
+	const crtshTimeout = 30 * time.Second
 	url := fmt.Sprintf("https://crt.sh/?q=%%.%s&output=json", domain)
 
 	client := &http.Client{
-		Timeout: 30 * time.Second,
+		Timeout: crtshTimeout,
 	}
 
-	resp, err := client.Get(url)
+	ctx, cancel := context.WithTimeout(context.Background(), crtshTimeout)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query crt.sh: %w", err)
 	}
