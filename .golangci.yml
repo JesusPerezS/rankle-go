@@ -42,6 +42,8 @@ linters:
     - gochecknoinits   # Allow init() for flag setup
     - gci              # Import grouping conflicts with gofumpt
     - tenv             # Deprecated, replaced by usetesting
+    - depguard         # Allow internal imports from same module
+    - err113           # Allow dynamic errors with context
 
 issues:
   max-issues-per-linter: 0

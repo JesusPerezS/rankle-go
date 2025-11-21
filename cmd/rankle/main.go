@@ -21,13 +21,13 @@ const (
 )
 
 var (
-	// Version information (set by GoReleaser via ldflags)
+	// Version information (set by GoReleaser via ldflags).
 	version = "dev"
 	commit  = "none"
 	date    = "unknown"
 	builtBy = "manual"
 
-	// CLI flags
+	// CLI flags.
 	jsonOutput  bool
 	textOutput  bool
 	outputType  string

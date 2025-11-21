@@ -13,6 +13,13 @@ import (
 	"github.com/javicosvml/rankle-go/pkg/models"
 )
 
+const (
+	maxRedirects        = 10
+	maxIdleConns        = 100
+	maxIdleConnsPerHost = 10
+	idleConnTimeout     = 90 * time.Second
+)
+
 // Scanner handles the main scanning logic.
 type Scanner struct {
 	config *config.Config
@@ -29,9 +36,9 @@ func New(cfg *config.Config) *Scanner {
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: cfg.TLS.InsecureSkipVerify,
 		},
-		MaxIdleConns:        100,
-		MaxIdleConnsPerHost: 10,
-		IdleConnTimeout:     90 * time.Second,
+		MaxIdleConns:        maxIdleConns,
+		MaxIdleConnsPerHost: maxIdleConnsPerHost,
+		IdleConnTimeout:     idleConnTimeout,
 	}
 
 	client := &http.Client{
@@ -41,8 +48,8 @@ func New(cfg *config.Config) *Scanner {
 			if !cfg.HTTP.FollowRedirect {
 				return http.ErrUseLastResponse
 			}
-			if len(via) >= 10 {
-				return fmt.Errorf("stopped after 10 redirects")
+			if len(via) >= maxRedirects {
+				return fmt.Errorf("stopped after %d redirects", maxRedirects)
 			}
 			return nil
 		},
