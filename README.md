@@ -63,17 +63,71 @@
 
 ## 🚀 Installation
 
-### Option 1: Download Pre-built Binaries ⚡
+### Option 1: Download Pre-built Binaries ⚡ (Recommended)
 
 Download the latest release for your platform from the [Releases](https://github.com/javicosvml/rankle-go/releases) page.
 
+**Linux (amd64):**
 ```bash
-# Linux/macOS
-chmod +x rankle-*
-./rankle-* example.com
+# Download
+wget https://github.com/javicosvml/rankle-go/releases/latest/download/rankle_VERSION_linux_amd64.tar.gz
 
-# Windows
-rankle-windows-amd64.exe example.com
+# Extract
+tar -xzf rankle_VERSION_linux_amd64.tar.gz
+
+# Move to PATH
+sudo mv rankle /usr/local/bin/
+
+# Verify
+rankle --version
+```
+
+**macOS (Apple Silicon M1/M2):**
+```bash
+# Download
+curl -LO https://github.com/javicosvml/rankle-go/releases/latest/download/rankle_VERSION_darwin_arm64.tar.gz
+
+# Extract
+tar -xzf rankle_VERSION_darwin_arm64.tar.gz
+
+# Move to PATH
+sudo mv rankle /usr/local/bin/
+
+# Verify
+rankle --version
+```
+
+**macOS (Intel):**
+```bash
+# Download
+curl -LO https://github.com/javicosvml/rankle-go/releases/latest/download/rankle_VERSION_darwin_amd64.tar.gz
+
+# Extract
+tar -xzf rankle_VERSION_darwin_amd64.tar.gz
+
+# Move to PATH
+sudo mv rankle /usr/local/bin/
+
+# Verify
+rankle --version
+```
+
+**Windows (PowerShell):**
+```powershell
+# Download from: https://github.com/javicosvml/rankle-go/releases/latest
+# Extract rankle_VERSION_windows_amd64.zip
+
+# Add to PATH or run directly
+.\rankle.exe --version
+```
+
+**Verify checksums:**
+```bash
+# Download checksums
+wget https://github.com/javicosvml/rankle-go/releases/latest/download/checksums.txt
+
+# Verify (Linux/macOS)
+sha256sum -c checksums.txt
 ```
 
 ### Option 2: Install with Go 📦
