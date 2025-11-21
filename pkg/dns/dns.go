@@ -140,7 +140,7 @@ func (r *Resolver) EnumerateSubdomains(domain string) ([]string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), crtshTimeout)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}

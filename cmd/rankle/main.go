@@ -16,6 +16,10 @@ import (
 	"github.com/javicosvml/rankle-go/pkg/tls"
 )
 
+const (
+	lineWidth = 80
+)
+
 var (
 	// Version information (set by GoReleaser via ldflags)
 	version = "dev"
@@ -251,9 +255,9 @@ func extractSecurityHeaders(headers map[string]string) map[string]string {
 func printUsage(formatter *output.Formatter) {
 	formatter.PrintBanner()
 
-	fmt.Println("\n" + strings.Repeat("=", 80))
+	fmt.Println("\n" + strings.Repeat("=", lineWidth))
 	fmt.Println("📖 USAGE")
-	fmt.Println(strings.Repeat("=", 80))
+	fmt.Println(strings.Repeat("=", lineWidth))
 	fmt.Println("\n  rankle <domain> [options]")
 	fmt.Println("\nEXAMPLES:")
 	fmt.Println("  rankle example.com")
@@ -279,5 +283,5 @@ func printUsage(formatter *output.Formatter) {
 	fmt.Println("\nNOTE:")
 	fmt.Println("  All reconnaissance is passive and uses public data sources.")
 	fmt.Println("  No active scanning or intrusive techniques are employed.")
-	fmt.Println(strings.Repeat("=", 80) + "\n")
+	fmt.Println(strings.Repeat("=", lineWidth) + "\n")
 }

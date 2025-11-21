@@ -37,6 +37,11 @@ linters:
     - tagliatelle
     - ireturn
     - cyclop
+    - forbidigo        # Allow fmt.Println in CLI tools
+    - gochecknoglobals # Allow globals for CLI flags
+    - gochecknoinits   # Allow init() for flag setup
+    - gci              # Import grouping conflicts with gofumpt
+    - tenv             # Deprecated, replaced by usetesting
 
 issues:
   max-issues-per-linter: 0

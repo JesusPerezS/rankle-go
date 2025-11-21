@@ -76,7 +76,7 @@ func (s *Scanner) AnalyzeHTTP(domain string) (*models.HTTPAnalysis, *http.Respon
 	ctx, cancel := context.WithTimeout(context.Background(), s.config.HTTP.Timeout)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create request: %w", err)
 	}
